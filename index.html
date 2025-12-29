@@ -990,21 +990,35 @@ createParticles();
 const musicBtn = document.querySelector('.music-player');
 let musicPlaying = false;
 
-/* Auto start music on first user interaction */
-function autoStartMusic() {
+function autoStartMusic(e) {
+    // Ignore clicks on music button itself (to avoid double toggle)
+    if (e.target.closest('.music-player')) return;
+
     if (!musicPlaying) {
+        music.volume = 0;
         music.play().then(() => {
             musicPlaying = true;
             musicBtn.innerHTML = '🔊';
             musicBtn.classList.add('playing');
+
+            // Smooth fade-in
+            let v = 0;
+            const fade = setInterval(() => {
+                v += 0.05;
+                music.volume = Math.min(v, 1);
+                if (v >= 1) clearInterval(fade);
+            }, 150);
         }).catch(() => {});
-        document.removeEventListener('click', autoStartMusic);
-        document.removeEventListener('touchstart', autoStartMusic);
     }
+
+    // Remove listener after first successful interaction
+    document.removeEventListener('click', autoStartMusic);
+    document.removeEventListener('touchstart', autoStartMusic);
 }
 
 document.addEventListener('click', autoStartMusic);
 document.addEventListener('touchstart', autoStartMusic);
+
 
 /* Manual toggle */
 function toggleMusic() {
