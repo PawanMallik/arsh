@@ -644,9 +644,51 @@
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        /* Loader styles */
+#loader{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    color:white;
+    font-family:'Great Vibes',cursive;
+    transition:opacity 1s ease, visibility 1s ease;
+}
+
+#loader.hide{
+    opacity:0;
+    visibility:hidden;
+}
+
+.loader-heart{
+    font-size:120px;
+    animation:heartbeat 1.2s infinite;
+}
+
+@keyframes heartbeat{
+    0%{transform:scale(1)}
+    30%{transform:scale(1.2)}
+    60%{transform:scale(1)}
+}
+
+#loader p{
+    font-size:2em;
+    margin-top:15px;
+}
+
     </style>
 </head>
 <body>
+    <!-- Loader -->
+<div id="loader">
+    <div class="loader-heart">❤️</div>
+    <p>Loading our love story...</p>
+</div>
+
     <div class="particles" id="particles"></div>
 
     <div class="page page1 active">
@@ -687,10 +729,10 @@
                 </div>
             </div>
         </div>
-        <div class="gallery-controls">
+        <!-- <div class="gallery-controls">
             <button class="gallery-btn" onclick="prevPhoto()">❮ Previous</button>
             <button class="gallery-btn" onclick="nextPhoto()">Next ❯</button>
-        </div>
+        </div> -->
         <button class="next-btn" onclick="nextPage()">
             <span>Continue ✨</span>
         </button>
@@ -756,10 +798,11 @@
     <div class="page page8">
         <div class="finale-content">
             <div class="mega-heart">❤️</div>
-            <h2>Here's to Forever</h2>
-            <p class="message">Thank you for being my person, my safe place, my adventure, and my home.</p>
-            <p class="message">Every day with you is my favorite day. Every moment is a treasure.</p>
-            <p class="message">Here's to us - today, tomorrow, and all the beautiful tomorrows after.</p>
+            <h2 style="font-size: 2em;">Nikku Love Arshu💕</h2>
+            <p class="message">Wish you Happy Anniversary meri Pyari aalu Baby....💕 </p>
+            <p class="message">I Promise with You😘, always irritate you, always fight with you, I never leave you coz.... Baby👇</p>
+            <p class="message">I Love You soooooooooooooooo much baby more then myself sona pakhi😙❤️😙   💖</p>
+            <p class="message">will you merry me baby 😙❤️ hamesha aapko apne palko per betha kr rakhunga........🙈💕</p>
             <div class="signature-box">
                 Yours, always and forever 💕<br>
                 With all my love
@@ -779,8 +822,15 @@
     </div>
 
     <div class="music-player" onclick="toggleMusic()">🎵</div>
+    <!-- Background Music -->
+<audio id="bgMusic" loop preload="auto">
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
 
     <script>
+
+        
         let currentPage = 0;
         const totalPages = 8;
         const pages = document.querySelectorAll('.page');
@@ -936,18 +986,42 @@ createParticles();
         }
     }
 
-    let musicPlaying = false;
-    function toggleMusic() {
-        musicPlaying = !musicPlaying;
-        const player = document.querySelector('.music-player');
-        if (musicPlaying) {
-            player.innerHTML = '🔊';
-            player.classList.add('playing');
-        } else {
-            player.innerHTML = '🎵';
-            player.classList.remove('playing');
-        }
+  const music = document.getElementById('bgMusic');
+const musicBtn = document.querySelector('.music-player');
+let musicPlaying = false;
+
+/* Auto start music on first user interaction */
+function autoStartMusic() {
+    if (!musicPlaying) {
+        music.play().then(() => {
+            musicPlaying = true;
+            musicBtn.innerHTML = '🔊';
+            musicBtn.classList.add('playing');
+        }).catch(() => {});
+        document.removeEventListener('click', autoStartMusic);
+        document.removeEventListener('touchstart', autoStartMusic);
     }
+}
+
+document.addEventListener('click', autoStartMusic);
+document.addEventListener('touchstart', autoStartMusic);
+
+/* Manual toggle */
+function toggleMusic() {
+    if (musicPlaying) {
+        music.pause();
+        musicBtn.innerHTML = '🎵';
+        musicBtn.classList.remove('playing');
+        musicPlaying = false;
+    } else {
+        music.play();
+        musicBtn.innerHTML = '🔊';
+        musicBtn.classList.add('playing');
+        musicPlaying = true;
+    }
+}
+
+
 
     dots.forEach((dot, index) => {
         dot.addEventListener('click', () => {
@@ -958,6 +1032,14 @@ createParticles();
             dots[currentPage].classList.add('active');
         });
     });
+    /* Loader logic */
+window.addEventListener('load', () => {
+    const loader = document.getElementById('loader');
+    setTimeout(() => {
+        loader.classList.add('hide');
+    }, 800); // small delay for smooth feel
+});
+
 </script>
 </body>
 </html>
